@@ -26,9 +26,11 @@ services:
     volumes:
       - uploads:/app/uploads
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - myfolio-network
+    restart: always
 
   db:
     image: mysql:8.0
@@ -43,6 +45,12 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - myfolio-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "myfolio", "--password=myfolio123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
 
 volumes:
   mysql-data:
