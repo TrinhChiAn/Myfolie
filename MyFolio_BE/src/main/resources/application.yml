@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: MyFolio_BE
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/myfolio?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  
+  # Static Resources Configuration
+  web:
+    resources:
+      static-locations: classpath:/static/,file:uploads/
+  mvc:
+    static-path-pattern: /**
+  
+  # Email Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: an.bluecyber@gmail.com
+    password: uwjobvzdkgzphxjq
+    properties:
+      mail:
+        debug: true
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  
+  # File Upload Configuration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# JWT Configuration
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 86400000 

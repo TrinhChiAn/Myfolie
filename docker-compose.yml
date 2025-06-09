@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: ./myfolio_fe
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - myfolio-network
+
+  backend:
+    build:
+      context: ./MyFolio_BE
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/myfolio?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=myfolio
+      - SPRING_DATASOURCE_PASSWORD=myfolio123
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      - db
+    networks:
+      - myfolio-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=myfolio
+      - MYSQL_USER=myfolio
+      - MYSQL_PASSWORD=myfolio123
+      - MYSQL_ROOT_PASSWORD=root123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - myfolio-network
+
+volumes:
+  mysql-data:
+  uploads:
+
+networks:
+  myfolio-network:
+    driver: bridge 
