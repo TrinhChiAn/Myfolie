@@ -56,7 +56,7 @@ public class EmailService {
     public void sendPasswordResetEmail(User user) {
         try {
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://localhost:3000/reset-password?token=" + token;
+            String resetLink = "http://45.77.172.27/reset-password?token=" + token;
 
             // Save the token first
             user.setResetPasswordToken(token);
