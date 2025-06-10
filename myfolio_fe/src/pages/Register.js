@@ -173,8 +173,8 @@ const Register = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        await auth.register(values.name, values.email, values.password);
-        toast.success('Registration successful! Please check your email to verify your account.');
+        const response = await auth.register(values.name, values.email, values.password);
+        toast.success(response.data.message || 'Registration successful! Please check your email to verify your account.');
         navigate('/login');
       } catch (error) {
         toast.error(error.response?.data?.message || 'Registration failed');

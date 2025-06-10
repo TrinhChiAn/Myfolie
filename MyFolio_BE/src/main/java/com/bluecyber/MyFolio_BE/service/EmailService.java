@@ -31,6 +31,11 @@ public class EmailService {
             String token = UUID.randomUUID().toString();
             String verificationLink = "http://localhost:8080/api/auth/verify?token=" + token;
 
+            // Save the token first
+            user.setVerificationToken(token);
+            user.setVerificationTokenExpiry(System.currentTimeMillis() + 3600000); // 1 hour
+            userService.saveUser(user);
+
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -42,6 +47,7 @@ public class EmailService {
                             "<h2>Hello " + user.getName() + ",</h2>" +
                             "<p>Please click the link below to verify your email address:</p>" +
                             "<a href='" + verificationLink + "'>Verify Email</a>" +
+                            "<p>This link will expire in 1 hour.</p>" +
                             "</body></html>",
                     true
             );

@@ -50,6 +50,12 @@ public class User implements UserDetails {
     private boolean emailVerified;
     
     @JsonIgnore
+    private String verificationToken;
+    
+    @JsonIgnore
+    private Long verificationTokenExpiry;
+    
+    @JsonIgnore
     private String resetPasswordToken;
     
     @JsonIgnore

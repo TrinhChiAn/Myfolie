@@ -69,4 +69,17 @@ public class AuthController {
         service.resetPassword(token.trim(), newPassword);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyEmail(@RequestParam String token) {
+        try {
+            service.verifyEmail(token.trim());
+            return ResponseEntity.ok()
+                .body(Map.of("message", "Email verified successfully"));
+        } catch (Exception e) {
+            log.error("Error in email verification: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
+        }
+    }
 } 

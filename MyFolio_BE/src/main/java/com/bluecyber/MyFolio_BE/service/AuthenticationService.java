@@ -35,21 +35,33 @@ public class AuthenticationService {
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .emailVerified(false)
                 .build();
         
+        // Save user first to get the ID
         repository.save(user);
         
-        // Try to send verification email, but don't fail registration if it fails
-        try {
-            emailService.sendVerificationEmail(user);
-        } catch (Exception e) {
-            log.error("Failed to send verification email to {}: {}", user.getEmail(), e.getMessage());
-        }
+        // Send verification email - this must succeed for registration to complete
+        emailService.sendVerificationEmail(user);
         
-        var jwtToken = jwtService.generateToken(user);
+        // Return response without token since email is not verified yet
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .message("Registration successful! Please check your email to verify your account.")
                 .build();
+    }
+
+    public void verifyEmail(String token) {
+        User user = repository.findByVerificationToken(token)
+                .orElseThrow(() -> new InvalidTokenException("Invalid or expired verification token"));
+
+        if (user.getVerificationTokenExpiry() < System.currentTimeMillis()) {
+            throw new InvalidTokenException("Verification token has expired");
+        }
+
+        user.setEmailVerified(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenExpiry(null);
+        repository.save(user);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -61,6 +73,11 @@ public class AuthenticationService {
         );
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        if (!user.isEmailVerified()) {
+            throw new InvalidTokenException("Please verify your email before logging in");
+        }
+        
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
