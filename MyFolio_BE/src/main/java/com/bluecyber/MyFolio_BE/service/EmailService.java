@@ -29,7 +29,7 @@ public class EmailService {
     public void sendVerificationEmail(User user) {
         try {
             String token = UUID.randomUUID().toString();
-            String verificationLink = "http://localhost:8080/api/auth/verify?token=" + token;
+            String verificationLink = "http://66.42.51.94:8080/api/auth/verify?token=" + token;
 
             // Save the token first
             user.setVerificationToken(token);
@@ -62,7 +62,7 @@ public class EmailService {
     public void sendPasswordResetEmail(User user) {
         try {
             String token = UUID.randomUUID().toString();
-            String resetLink = "http://45.77.172.27/reset-password?token=" + token;
+            String resetLink = "http://66.42.51.94/reset-password?token=" + token;
 
             // Save the token first
             user.setResetPasswordToken(token);
